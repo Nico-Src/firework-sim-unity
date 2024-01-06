@@ -1,2 +1,2 @@
-# firework-sim-unity
- Firework Simulator in Unity featuring Firecrackers, Rockets and Batteries.
+# Firework Simulator
+Firework Simulator in Unity featuring Firecrackers, Rockets and Batteries.
