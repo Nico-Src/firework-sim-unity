@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a47699c9fdcbca4ca85dd1b46e88275, type: 3}
+  m_Name: Achtung 5G Red
+  m_EditorClassIdentifier: 
+  Prefab: {fileID: 6011050534399353146, guid: faf817775c17fcc4f9a22c7e4eecfc75, type: 3}
+  FracturedPrefab: {fileID: 1548516378169841092, guid: 1f92f5673072cba4c9d68b0943819043, type: 3}
+  PlaceholderPrefab: {fileID: 6011050534399353146, guid: 99e682a3714762f48bb55db96adac717, type: 3}
+  DetonationCount: 1
+  DetonationOffsets:
+  - -0.2
+  DetonationRange:
+    Min: 3
+    Max: 5
+  ExplosionForceRange:
+    Min: 5000
+    Max: 10000
+  DetonationRadius: 1
+  DetonationMask:
+    serializedVersion: 2
+    m_Bits: 128
+  DetonationSounds:
+  - {fileID: 8300000, guid: 94f2152fec06a464b94baf2f0d4ad284, type: 3}
+  DetonationVolumes:
+  - 1
+  FuseSound: {fileID: 8300000, guid: b65dff758db09c547b89b3825beff101, type: 3}
+  FuseVolume: 0.2
+  SparksPrefabs:
+  - {fileID: 799258807841597118, guid: 1958116f3f808314aabf7ff8bfca80c7, type: 3}
+  - {fileID: 799258807841597118, guid: 3a1dd61f912cbcc48862a65436f51981, type: 3}
+  SmokePrefabs:
+  - {fileID: 363575706424042322, guid: bd8adea579f172f4cbe5a2e2cb4815d4, type: 3}
+  - {fileID: 363575706424042322, guid: eefaaf1849902044a8de2dc0ff09a564, type: 3}
+  FusePath:
+    From: {x: -0.00177, y: 0, z: -0.01468}
+    To: {x: -0.00004, y: 0, z: -0.00979}
+  SparksDurations:
+  - 0.5
+  - 0.5
+  SmokeDurations:
+  - 0.5
+  - 0.5
+  SparksRotations:
+  - {x: 0, y: 0.98662484, z: 0, w: -0.1630074}
+  - {x: 0, y: 0.98662484, z: 0, w: -0.1630074}
+  SmokeRotations:
+  - {x: 0, y: 1, z: 0, w: -0.00000004371139}
+  - {x: 0, y: 1, z: 0, w: -0.00000004371139}
+  SparkOffsets:
+  - 0
+  - 0.5
+  SmokeOffsets:
+  - 0
+  - 0.5

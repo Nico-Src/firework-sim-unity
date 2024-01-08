@@ -14,6 +14,7 @@ public class PlayerCam : MonoBehaviour
 
     void Start()
     {
+        // lock cursor on start
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -21,8 +22,10 @@ public class PlayerCam : MonoBehaviour
     
     void Update()
     {
+        // if cursor is not locked dont update the cam
         if (Cursor.lockState == CursorLockMode.None) return;
 
+        // get mouse input and apply sensitivity
         float mouseX = Input.GetAxisRaw("Mouse X") * sensX;
         float mouseY = Input.GetAxisRaw("Mouse Y") * sensY;
 

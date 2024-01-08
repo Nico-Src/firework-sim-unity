@@ -27,17 +27,22 @@ public class PlayerController : MonoBehaviour
 
     [Header("UI")]
     public GameObject crosshair;
+    private UnityEngine.UI.Image crosshairImg;
+    public Sprite actionTexture;
+    public Sprite defaultTexture;
     public GameObject toolSelectWindow;
+    public GameObject itemSelectWindow;
 
     [Header("Place Settings")]
     public float placeDistance;
-    public GameObject placePrefab;
-    public GameObject placeHolderPrefab;
+    public FirecrackerData firecrackerData;
     GameObject placeholder;
 
     [Header("Selection")]
     public LayerMask selectMask;
     Outline selected;
+    [Range(0.1f, 50.0f)]
+    public float scrollSens;
 
     [Header("Ground Check")]
     public float playerHeight;
@@ -57,6 +62,7 @@ public class PlayerController : MonoBehaviour
     public KeyCode sprintKey = KeyCode.LeftShift;
     public KeyCode zoomKey = KeyCode.C;
     public KeyCode switchToolKey = KeyCode.Tab;
+    public KeyCode selectItemKey = KeyCode.Q;
 
     public MouseButton activateButton = MouseButton.LeftMouse;
     public MouseButton placeButton = MouseButton.RightMouse;
@@ -70,6 +76,7 @@ public class PlayerController : MonoBehaviour
     public bool grounded = false;
     [ReadOnly(true)]
     public Tool currentTool = Tool.Lighter;
+    public float selectedYOffset;
 
     public enum MovementState
     {
@@ -86,12 +93,16 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        // set default fov
         defaultFOV = Camera.main.fieldOfView;
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
-        readyToJump = true;
+        crosshairImg = crosshair.GetComponent<UnityEngine.UI.Image>();
 
-        placeholder = Instantiate(placeHolderPrefab, Vector3.one * -100, Quaternion.identity);
+        readyToJump = true;
+    
+        // instantiate placeholder prefab and hide for now
+        placeholder = Instantiate(firecrackerData.PlaceholderPrefab, Vector3.one * -100, Quaternion.identity);
         placeholder.gameObject.SetActive(false);
     }
 
@@ -106,19 +117,14 @@ public class PlayerController : MonoBehaviour
         Raycast();
 
         // apply drag if player is grounded
-        if (grounded)
-        {
-            rb.drag = groundDrag;
-        } 
-        else
-        {
-            rb.drag = 0;
-        }
+        if (grounded) rb.drag = groundDrag;
+        else rb.drag = 0;
 
-        if(currentTool == Tool.Place && placeholder != null)
+        // if the current tool is the place tool and the placeholder is set show it and keep it at the crosshair
+        if (currentTool == Tool.Place && placeholder != null)
         {
             placeholder.SetActive(true);
-            placeholder.transform.position = transform.position + Camera.main.transform.forward * placeDistance;
+            placeholder.transform.position = (transform.position + Camera.main.transform.forward * placeDistance) + new Vector3(0, selectedYOffset, 0);
         }
     }
 
@@ -147,18 +153,19 @@ public class PlayerController : MonoBehaviour
                 // set selected
                 selected = outline;
             }
+
+            crosshairImg.sprite = actionTexture;
         }
         // if there isnt disable outline of the last selected
         else if(selected != null)
         {
             selected.enabled = false;
             selected = null;
+            crosshairImg.sprite = defaultTexture;
         }
 
-        if (Input.GetMouseButtonDown((int)placeButton) && currentTool == Tool.Place)
-        {
-            Instantiate(placePrefab, transform.position + Camera.main.transform.forward * placeDistance, Quaternion.identity);
-        }
+        // spawn firecracker if place-button is pressed and place tool is selected
+        if (Input.GetMouseButtonDown((int)placeButton) && currentTool == Tool.Place) Instantiate(firecrackerData.Prefab, (transform.position + Camera.main.transform.forward * placeDistance) + new Vector3(0, selectedYOffset, 0), Quaternion.identity);
     }
 
     void StateHandler()
@@ -176,32 +183,36 @@ public class PlayerController : MonoBehaviour
             moveSpeed = walkSpeed;
         }
         // in air
-        else
-        {
-            state = MovementState.Air;
-        }
+        else state = MovementState.Air;
     }
 
     void GetInput()
     {
+        // get values
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
+        // modify place distance based on mouse wheel delta
+        placeDistance += Input.mouseScrollDelta.y * scrollSens / 100;
+
+        // if jump key is pressed, player is ready to jump and grounded jump
         if(Input.GetKey(jumpKey) && readyToJump && grounded)
         {
             readyToJump = false;
-
+            // jump
             Jump();
-
+            // reset after jump cooldown
             Invoke(nameof(ResetJump), jumpCooldown);
         }
 
+        // if activate button is pressed and player hovers over object with fuse activate its fuse
         if (Input.GetMouseButtonDown((int)activateButton) && selected != null)
         {
             Fuse fuse = selected.transform.Find("Fuse").GetComponent<Fuse>();
             fuse.ActivateFuse();
         }
 
+        // zooming
         if (Input.GetKey(zoomKey))
         {
             if (Camera.main.fieldOfView > (defaultFOV - zoomedInFOVMultiplier)) Camera.main.fieldOfView -= zoomSpeed * Time.deltaTime;
@@ -213,9 +224,16 @@ public class PlayerController : MonoBehaviour
             else Camera.main.fieldOfView = defaultFOV;
         }
 
+        // toggle tool select ui component
         if (Input.GetKeyDown(switchToolKey)) ToggleToolSelect();
+
+        // toggle item select ui component
+        if (Input.GetKeyDown(selectItemKey)) ToggleItemSelect();
     }
 
+    /// <summary>
+    /// Hide/Show Tool Select UI and Lock/Unlock Cursor
+    /// </summary>
     private void ToggleToolSelect()
     {
         // toggle tool select window
@@ -235,6 +253,32 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Hide/Show Item Select UI and Lock/Unlock Cursor
+    /// </summary>
+    private void ToggleItemSelect()
+    {
+        // toggle tool select window
+        itemSelectWindow.SetActive(!itemSelectWindow.activeSelf);
+        // hide crosshair if tool select window is active and show if not
+        crosshair.SetActive(!itemSelectWindow.activeSelf);
+        // set cursor state
+        if (itemSelectWindow.activeSelf)
+        {
+            UnityEngine.Cursor.lockState = CursorLockMode.None;
+            UnityEngine.Cursor.visible = true;
+        }
+        else
+        {
+            UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+            UnityEngine.Cursor.visible = false;
+        }
+    }
+
+    /// <summary>
+    /// Switch to given tool
+    /// </summary>
+    /// <param name="tool"> tool to switch to (will be converted to Tool) </param>
     public void SwitchTool(int tool)
     {
         currentTool = (Tool)tool;
@@ -242,36 +286,47 @@ public class PlayerController : MonoBehaviour
         // if current tool is not the place tool hide placeholder
         if (currentTool != Tool.Place) placeholder.SetActive(false);
         // else placeholder is not set instantiate it
-        else if (placeholder == null)
-        {
-             placeholder = Instantiate(placeholder);
-        }
-
+        else if (placeholder == null) placeholder = Instantiate(firecrackerData.PlaceholderPrefab);
+        // close tool select afterwards
         ToggleToolSelect();
     }
 
+    /// <summary>
+    /// Set item to place
+    /// </summary>
+    /// <param name="data"></param>
+    public void SetPlaceItem(FirecrackerData data)
+    {
+        firecrackerData = data;
+        if (placeholder != null) Destroy(placeholder.gameObject);
+        placeholder = Instantiate(firecrackerData.PlaceholderPrefab);
+        ToggleItemSelect();
+    }
+
+    /// <summary>
+    /// Add force to rigidbody to move player
+    /// </summary>
     private void Move()
     {
         // calc move direction
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
         
         // on ground
-        if (grounded)
-        {
-            rb.AddForce(moveDirection * moveSpeed * 10f, ForceMode.Force);
-        }
+        if (grounded) rb.AddForce(moveDirection * moveSpeed * 10f, ForceMode.Force);
         // in air
-        else if (!grounded)
-        {
-            rb.AddForce(moveDirection * moveSpeed * 10f * airMultiplier, ForceMode.Force);
-        }
+        else if (!grounded) rb.AddForce(moveDirection * moveSpeed * 10f * airMultiplier, ForceMode.Force);
     }
 
+    /// <summary>
+    /// Limit players velocity to movespeed
+    /// </summary>
     private void SpeedLimiter()
     {
+        // calculate velocity (without y-axis)
         Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         curVel = flatVel.magnitude;
 
+        // if velocity is higher than movespeed limit it to the move speed
         if(curVel > moveSpeed)
         {
             Vector3 limitedVel = flatVel.normalized * moveSpeed;
@@ -279,14 +334,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Add Jump Force to rigidbody
+    /// </summary>
     private void Jump()
     {
         // reset v velocity
         rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
 
+    /// <summary>
+    /// Reset Jump
+    /// </summary>
     private void ResetJump()
     {
         readyToJump = true;
