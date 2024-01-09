@@ -149,12 +149,14 @@ public class PlayerController : MonoBehaviour
                 // if selected is not null (something is selected other than the current outline) disable outline of the selected
                 if (selected != null) selected.enabled = false;
                 // enable outline (only if fuse hasnt been activated or detonated)
-                if(fuse.activated == false && fuse.detonated == false) outline.enabled = true;
+                if (fuse.activated == false && fuse.detonated == false)
+                {
+                    outline.enabled = true;
+                    crosshairImg.sprite = actionTexture;
+                }
                 // set selected
                 selected = outline;
             }
-
-            crosshairImg.sprite = actionTexture;
         }
         // if there isnt disable outline of the last selected
         else if(selected != null)
@@ -165,7 +167,10 @@ public class PlayerController : MonoBehaviour
         }
 
         // spawn firecracker if place-button is pressed and place tool is selected
-        if (Input.GetMouseButtonDown((int)placeButton) && currentTool == Tool.Place) Instantiate(firecrackerData.Prefab, (transform.position + Camera.main.transform.forward * placeDistance) + new Vector3(0, selectedYOffset, 0), Quaternion.identity);
+        if (Input.GetMouseButtonDown((int)placeButton) && currentTool == Tool.Place)
+        {
+            Instantiate(firecrackerData.Prefab, (transform.position + Camera.main.transform.forward * placeDistance) + new Vector3(0, selectedYOffset, 0), Quaternion.identity);
+        }
     }
 
     void StateHandler()
