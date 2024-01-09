@@ -203,8 +203,8 @@ namespace FCG
             if (!transform.GetComponent<Rigidbody>())
                 transform.gameObject.AddComponent<Rigidbody>();
 
-            if (transform.gameObject.GetComponent<Rigidbody>().mass < 4000f)
-                transform.gameObject.GetComponent<Rigidbody>().mass = 4000f;
+            if (transform.gameObject.GetComponent<Rigidbody>().mass < 10f)
+                transform.gameObject.GetComponent<Rigidbody>().mass = 10f;
 
             transform.gameObject.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
 
