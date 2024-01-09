@@ -22,8 +22,8 @@ MonoBehaviour:
     Min: 3
     Max: 5
   ExplosionForceRange:
-    Min: 5000
-    Max: 10000
+    Min: 3000
+    Max: 4000
   DetonationRadius: 1
   DetonationMask:
     serializedVersion: 2

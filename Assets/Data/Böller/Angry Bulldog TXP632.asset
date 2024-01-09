@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0a47699c9fdcbca4ca85dd1b46e88275, type: 3}
-  m_Name: Achtung 5G Crackling
+  m_Name: Angry Bulldog TXP632
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 6011050534399353146, guid: fae02ec32412d4a4b991430031bb0030, type: 3}
-  FracturedPrefab: {fileID: 1548516378169841092, guid: 1f92f5673072cba4c9d68b0943819043, type: 3}
-  PlaceholderPrefab: {fileID: 6011050534399353146, guid: 99e682a3714762f48bb55db96adac717, type: 3}
+  Prefab: {fileID: 2370505684512319961, guid: 2f12f4050e9f3b14b815ad1920705ad2, type: 3}
+  FracturedPrefab: {fileID: 119993237723523169, guid: 6397bdcfb8e122d48b488e831b374c7e, type: 3}
+  PlaceholderPrefab: {fileID: 2370505684512319961, guid: 7ef8fc7cf90d951409b6f1243daf3c8e, type: 3}
   DetonationCount: 1
   DetonationOffsets:
   - -0.2
   DetonationRange:
-    Min: 3
-    Max: 5
+    Min: 4
+    Max: 6
   ExplosionForceRange:
-    Min: 3000
-    Max: 4000
+    Min: 4000
+    Max: 6000
   DetonationRadius: 1
   DetonationMask:
     serializedVersion: 2
@@ -36,24 +36,20 @@ MonoBehaviour:
   FuseVolume: 0.2
   SparksPrefabs:
   - {fileID: 799258807841597118, guid: 1958116f3f808314aabf7ff8bfca80c7, type: 3}
-  - {fileID: 799258807841597118, guid: 1d10c247a57abee499bfea7aa7cfd0a4, type: 3}
   SmokePrefabs:
   - {fileID: 363575706424042322, guid: bd8adea579f172f4cbe5a2e2cb4815d4, type: 3}
   FusePath:
-    From: {x: -0.00177, y: 0, z: -0.01468}
-    To: {x: -0.00004, y: 0, z: -0.00979}
+    From: {x: 0, y: 0.0086, z: 0.01405}
+    To: {x: 0, y: 0.0001, z: 0.0098}
   SparksDurations:
-  - 0.5
-  - 0.5
+  - 0.85
   SmokeDurations:
-  - 0.5
+  - 1
   SparksRotations:
-  - {x: 0, y: 0.98662484, z: 0, w: -0.1630074}
-  - {x: 0, y: 1, z: 0, w: -0.00000004371139}
+  - {x: 0.22817245, y: 0, z: 0, w: -0.9736207}
   SmokeRotations:
-  - {x: 0, y: 1, z: 0, w: -0.00000004371139}
+  - {x: 0, y: 0, z: 0, w: 1}
   SparkOffsets:
   - 0
-  - 0.5
   SmokeOffsets:
   - 0
