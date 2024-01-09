@@ -98,8 +98,8 @@ public class Fuse : MonoBehaviour
 
                 // particle effects should move with the fuse progress (between two given points
                 Vector3 curPos = Vector3.Lerp(FirecrackerData.FusePath.From, FirecrackerData.FusePath.To, fuseProgress);
-                Sparks[0].transform.localPosition = curPos;
-                Smokes[0].transform.localPosition = curPos;
+                foreach(GameObject obj in Sparks) obj.transform.localPosition = curPos;
+                foreach (GameObject obj in Smokes) obj.transform.localPosition = curPos;
 
                 // set transparency of fuse shader (how much of the fuse is gone basically)
                 mat.SetFloat("_Transparency", 1.0f - fuseProgress);
@@ -121,7 +121,7 @@ public class Fuse : MonoBehaviour
                     // if already activated skip
                     if (fuse.activated == true) continue;
                     // else activate
-                    fuse.timeToDetonate = UnityEngine.Random.Range(100,2000) / 1000.0f;
+                    fuse.timeToDetonate = UnityEngine.Random.Range(250,2000) / 1000.0f;
                     fuse.ActivateFuse();
                 }
 
